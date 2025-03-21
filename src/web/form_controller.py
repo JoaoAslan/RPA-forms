@@ -24,18 +24,21 @@ def login(main_driver, main_config) :
                 ).click()
 
 # Go to checklist page
-def init_checklist(main_config, text) :
+def init_checklist(main_config, loc) :
     if (pageIsLoaded((By.XPATH, '/html/body/div[1]/div[1]/div[1]/div[1]/div/a/img'))):
         driver.get(main_config.checklist_1)
-    findElementOnSearch(text).click()
+
+    elements = (By.CLASS_NAME, 'pre-apply-option__text')
+    search = (By.XPATH, '/html/body/cl-root/cl-hall/div/div/div/cl-pre-apply-shell/cl-main-content/div[2]/div/div/cl-step-unit/div/div[1]/cl-unit-filters/div/div/mat-form-field/div[1]/div/div[3]/input')
+    notFound = findElement((By.XPATH, '/html/body/cl-root/cl-hall/div/div/div/cl-pre-apply-shell/cl-main-content/div[2]/div/div/cl-step-unit/div/div[2]/cl-empty-states/cl-empty-state/div/div[2]/span[1]'), 0.5)
+    
+    elementsList = searchElements(search, loc, elements, notFound)
+    searchElement(elementsList, loc).click()
+
     if (pageIsLoaded((By.XPATH, '/html/body/cl-root/cl-hall/div/div/div/cl-pre-apply-shell/cl-main-content/div[2]/div/div/cl-step-checklist/div/div[1]/cl-step-identification[1]/div'))):
         driver.get(main_config.checklist_2)
 
-def checklist_infopage(csv_line) :
-    findElement((By.XPATH, '/html/body/cl-root/cl-feature-shell/div[2]/div/div[2]/div/cl-categories/cl-main-content-card/div/cdk-virtual-scroll-viewport/div[1]/div[2]/cl-item/div/div[1]/cl-scale-selection/cl-multiselect/cl-multiselect-input/mat-form-field/div[1]/div[2]/div[1]/input')
-                ).click()
-    findElement((By.XPATH, '/html/body/div[5]/div[3]/div/cl-multiselect-options/div/div/cdk-virtual-scroll-viewport/div[1]/cl-multiselect-option[5]/div/cl-multiselect-option-value')
-                ).click()
+def checklist_infopage() :
     return True
 
 def findElement(seletor, tempo_limite=10):
@@ -47,8 +50,9 @@ def findElement(seletor, tempo_limite=10):
     except TimeoutException:
         return None
 
-def findElementsList(by, path):
-    if (findElement((by, path)) != None):
+def findElementsList(seletor):
+    if (findElement(seletor) != None):
+        by, path = seletor
         return driver.find_elements(by, path)
     return None
 
@@ -60,21 +64,18 @@ def pageIsLoaded(seletor) :
     except InvalidSelectorException as e:
         print(f"Erro: {e}")
 
-def search(input, notFoundElement, text) :
-    # Search bar input
-    findElement(input).send_keys(text)
-    if (notFoundElement != None) :
+# Seach input in search bar and give list of all elements found
+def searchElements(search, input, elements, notFound) :
+    findElement(search).send_keys(input)
+    if (notFound != None) :
         return None
-    else:
-        return findElementsList(By.CLASS_NAME, 'pre-apply-option__text')
-    
-def findElementOnSearch(text) :
-    input = (By.XPATH, '/html/body/cl-root/cl-hall/div/div/div/cl-pre-apply-shell/cl-main-content/div[2]/div/div/cl-step-unit/div/div[1]/cl-unit-filters/div/div/mat-form-field/div[1]/div/div[3]/input')
-    notFoundElement = findElement((By.XPATH, '/html/body/cl-root/cl-hall/div/div/div/cl-pre-apply-shell/cl-main-content/div[2]/div/div/cl-step-unit/div/div[2]/cl-empty-states/cl-empty-state/div/div[2]/span[1]'), 0.5)
-    listElements = search(input, notFoundElement, text)
+    return findElementsList(elements)
+
+# Search element by element.text
+def searchElement(listElements, foundText) :
     try :
         for element in listElements:
-            if element.text == text :
+            if element.text == foundText :
                 return element
     except TypeError as e:
-        print("Não foi possivel localizar nenhum elemento com o input: "+ text)
+        print("Não foi possivel localizar nenhum elemento com o input: "+ foundText)

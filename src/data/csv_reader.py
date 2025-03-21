@@ -1,42 +1,23 @@
 # Code for read CSV
-import pandas as pd
+import csv
 import datetime as dt
 
-def printa():
-    print("teste")
+def readCSV(path) :
+    return csv.DictReader(open(path, 'r', encoding='utf-8'))
 
-def readLine(config) :
+def validate(config, line, index=0) :
+    try :
+        name = line["NOME DO COLABORADOR"]
+        mat = line["MATRICULA"]
+        loc = line["LOCOMOTIVA"]
+        time = line["HORA"]
 
-    df = pd.read_csv(config.sheet)
+        base_mats = tupleToList(baseToList(readCSV(config.base)), 1)
+        if (not mat in base_mats) :
+            raise ValueError()
 
-    # Converting values to Integer and String
-    df['MATRICULA'] = pd.to_numeric(df['MATRICULA'], errors='coerce')
-    df['MATRICULA'] = df['MATRICULA'].fillna(0)
-    df['MATRICULA'] = df['MATRICULA'].astype(int)
-
-    df['LOCOMOTIVA'] = pd.to_numeric(df['LOCOMOTIVA'], errors='coerce')
-    df['LOCOMOTIVA'] = df['LOCOMOTIVA'].fillna(0)
-    df['LOCOMOTIVA'] = df['LOCOMOTIVA'].astype(str)
-    df['LOCOMOTIVA'] = df['LOCOMOTIVA'].str.zfill(5)
-
-    return df
-    '''
-    for index, row in df.iterrows() :
-
-        if (index > 5) :
-            break
-
-        row_name = row["NOME DO COLABORADOR"]
-        row_mat = row["MATRICULA"]
-        row_loc = row["LOCOMOTIVA"]
-        row_time = row["HORA"]
-        
-        name = str(row_name)
-        mat = str(row_mat)
-        loc = str(row_loc)
-        
         # Time formatter
-        time_split = row_time.split(":")
+        time_split = time.split(":")
         time = [int(value) for value in time_split]
         date_temp = dt.datetime(2000, 1, 1,time[0],time[1],time[2])
         delta = dt.timedelta(minutes=10)
@@ -46,11 +27,17 @@ def readLine(config) :
         final_time = final_date_temp.time()
 
         # Date formatter
-        col_data = row["DATA"]
-        data_split = col_data.split("/")
-        dataf = [int(valor) for valor in data_split]
-        data = dt.date(dataf[2], dataf[1], dataf[0])
+        col_date = line["DATA"]
+        data_split = col_date.split("/")
+        datef = [int(valor) for valor in data_split]
+        date = dt.date(datef[2], datef[1], datef[0])
+        
+        return [name, mat, loc, start_time, final_time, date]
+    except ValueError as e:
+        print("Error to validate index:", index)
 
-        print(row)
-        print(f'{index}, {name}, {mat}, {loc}, {start_time} -> {final_time} {data}')'
-    '''
+def baseToList(csv) :
+    return [[line["NOME"], line["MAT"]] for line in csv]
+
+def tupleToList(tuple, index) :
+    return [line[index] for line in tuple]

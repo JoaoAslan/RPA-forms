@@ -2,14 +2,17 @@ import web.form_controller as controller
 import data.csv_reader as datareader
 import web.config.sel_config as config
 
-#driver = config.driver()
+# Initialization and login
+driver = config.driver()
+controller.init(driver)
+controller.login(driver, config)
 
-csv = datareader.readLine(config)
-for index, line in csv.iterrows():
-    validateLine = datareader.validate(line)
-    
-#controller.init(driver)
-#controller.login(driver, config)
-# Looping for each line in CSV
-#controller.init_checklist(config, "00751") # locomotiva value here
-#controller.checklist_infopage("teste")
+# Reading informations
+csv = datareader.readCSV(config.sheet)
+for index, line in enumerate(csv) :
+    validLine = datareader.validate(config, line, index)
+    print(validLine)
+
+loc = None
+controller.init_checklist(config, loc) # locomotiva value here
+controller.checklist_infopage()
