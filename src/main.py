@@ -10,9 +10,10 @@ controller.login(driver, config)
 # Reading informations
 csv = datareader.readCSV(config.sheet)
 for index, line in enumerate(csv) :
+    if index > 0:
+        break
     validLine = datareader.validate(config, line, index)
     print(validLine)
-
-loc = None
-controller.init_checklist(config, loc) # locomotiva value here
-controller.checklist_infopage()
+    controller.init_checklist(config, validLine[2]) # locomotive value here
+    controller.checklist_infopage(validLine)
+    controller.checklistItems()
