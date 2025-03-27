@@ -1,19 +1,22 @@
 import web.form_controller as controller
 import data.csv_reader as datareader
-import web.config.sel_config as config
+import config.configuration as config
 
-# Initialization and login
-driver = config.driver()
-controller.init(driver)
-controller.login(driver, config)
+controller.init(config)
+controller.login()
 
 # Reading informations
-csv = datareader.readCSV(config.sheet)
+csv = datareader.readCSV(config.SHEET)
+temp = csv[:]
 for index, line in enumerate(csv) :
-    if index > 0:
-        break
-    validLine = datareader.validate(config, line, index)
-    print(validLine)
-    controller.init_checklist(config, validLine[2]) # locomotive value here
-    controller.checklist_infopage(validLine)
-    controller.checklistItems()
+    try:
+        if index > 0:
+            break
+        validLine = datareader.validate(config.BASE, line, index)
+        controller.init_checklist(validLine)
+        controller.checklist_infopage(validLine)
+        controller.checklistItems()
+    except Exception as e:
+        # csvError()
+        print(f"Error on index: {index}\n",
+              f"Error: {e}")

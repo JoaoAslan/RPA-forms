@@ -3,16 +3,18 @@ import csv
 import datetime as dt
 
 def readCSV(path) :
-    return csv.DictReader(open(path, 'r', encoding='utf-8'))
+    with open(path, 'r', newline='', encoding='utf-8') as csv_file:
+        reader = list(csv.DictReader(csv_file))
+        return reader
 
-def validate(config, line, index=0) :
+def validate(base, line, index=0) :
     try :
         name = line["NOME DO COLABORADOR"]
         mat = line["MATRICULA"]
         loc = line["LOCOMOTIVA"]
         time = line["HORA"]
 
-        base_mats = tupleToList(baseToList(readCSV(config.base)), 1)
+        base_mats = tupleToList(baseToList(readCSV(base)), 1)
         if (not mat in base_mats) :
             raise ValueError()
 
@@ -23,18 +25,19 @@ def validate(config, line, index=0) :
         delta = dt.timedelta(minutes=10)
         final_date_temp = date_temp + delta
 
-        start_time = date_temp.time()
-        final_time = final_date_temp.time()
+        start_time = str(date_temp.time().strftime("%H:%M"))
+        final_time = str(final_date_temp.time().strftime("%H:%M"))
 
         # Date formatter
         col_date = line["DATA"]
         data_split = col_date.split("/")
         datef = [int(valor) for valor in data_split]
-        date = dt.date(datef[2], datef[1], datef[0])
+        date = str(dt.date(datef[2], datef[1], datef[0]).strftime("%d/%m/%Y"))
         
-        return [name, mat, loc, start_time, final_time, date]
+        return [name, mat, loc, date, start_time, final_time]
     except ValueError as e:
         print("Error to validate index:", index)
+        #csvError()
 
 def baseToList(csv) :
     return [[line["NOME"], line["MAT"]] for line in csv]
