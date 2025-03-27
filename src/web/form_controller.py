@@ -18,13 +18,15 @@ def login() :
     findElement((By.XPATH, "//span[text()=' Continuar ']")).click()
     findElement((By.NAME, "user-password")).send_keys(config.PASSWORD)
     findElement((By.XPATH, "//span[text()=' Entrar ']")).click()
+    
+    if (pageIsLoaded(config.CHECKLIST_URL)) :
+        loadPage(config.APPLYCHECKLIST_URL)
 
 # Go to checklist page
 def init_checklist(line) :
-    if (pageIsLoaded(config.CHECKLIST_URL)):
-        loadPage(config.APPLYCHECKLIST_URL)
+    loadPage(config.APPLYCHECKLIST_URL)
     findElement((By.ID, "field-search-1")).send_keys(line[2])
-    findElementByText("div", line[2]).click()
+    findElementByText("div", line[2], 3).click()
     findElementByText("div", "Limpeza de Cabine de Locomotivas", 5).click()
     
 def checklist_infopage(line) :
@@ -48,10 +50,11 @@ def checklist_infopage(line) :
     findElement((By.XPATH, "/html/body/cl-root/cl-feature-shell/div[2]/div/div[2]/div/cl-categories/cl-main-content-card/div/cdk-virtual-scroll-viewport/div[1]/div[6]/cl-item/div/div[1]/cl-scale-hour/mat-form-field/div[1]/div[2]/div[1]/input")
                 ).send_keys(line[4])
     
-    # Finish time
+    # Finish time ERROR BY TIME
     findElement((By.XPATH, "/html/body/cl-root/cl-feature-shell/div[2]/div/div[2]/div/cl-categories/cl-main-content-card/div/cdk-virtual-scroll-viewport/div[1]/div[7]/cl-item/div/div[1]/cl-scale-hour/mat-form-field/div[1]/div[2]/div[1]/input")
                 ).send_keys(line[5])
 
+    sleep(1)
     findElementByText("span", "Próximo").click()
     
 def checklistItems() :
@@ -77,9 +80,9 @@ def checklistItems() :
     for i in range(4):                                                                                                                # next (1 -> 4)
         sleep(0.5)
         findElementByText("span", "Próximo").click()
-    #findElementByText("span", " Concluir ").click()                                                                                   # finish (1/2)
-    #findElementByText("span", "Concluir ").click()                                                                                    # finish (2/2)
-    #findElementByText("span", " Ok ").click()                                                                                         # ok
+    findElementByText("span", " Concluir ").click()                                                                                   # finish (1/2)
+    findElementByText("span", "Concluir ").click()                                                                                    # finish (2/2)
+    findElementByText("span", " Ok ").click()                                                                                         # ok
     
 # Find a element by seletor
 def findElement(seletor, timeout=10):

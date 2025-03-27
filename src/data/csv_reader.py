@@ -9,14 +9,14 @@ def readCSV(path) :
 
 def validate(base, line, index=0) :
     try :
-        name = line["NOME DO COLABORADOR"]
+        name = line["NOME"].upper()
         mat = line["MATRICULA"]
         loc = line["LOCOMOTIVA"]
         time = line["HORA"]
-
+        
         base_mats = tupleToList(baseToList(readCSV(base)), 1)
         if (not mat in base_mats) :
-            raise ValueError()
+            raise ValueError("Employee registration not exits")
 
         # Time formatter
         time_split = time.split(":")
@@ -35,9 +35,12 @@ def validate(base, line, index=0) :
         date = str(dt.date(datef[2], datef[1], datef[0]).strftime("%d/%m/%Y"))
         
         return [name, mat, loc, date, start_time, final_time]
-    except ValueError as e:
-        print("Error to validate index:", index)
-        #csvError()
+    except Exception :
+        raise Exception("Error to validate index:", index)
+
+def readLine(line) :
+    return [line["NOME"], line["MATRICULA"], line["LOCOMOTIVA"], line["DATA"], line["HORA"]]
+    
 
 def baseToList(csv) :
     return [[line["NOME"], line["MAT"]] for line in csv]

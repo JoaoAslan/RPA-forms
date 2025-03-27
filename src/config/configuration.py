@@ -20,9 +20,11 @@ load_dotenv()
 LOGIN_URL=os.getenv("LOGIN_URL")
 USER=os.getenv("USER")
 PASSWORD=os.getenv("PASSWORD")
+
 CHECKLIST_URL=os.getenv("CHECKLIST_URL")
-CLEANING_URL=os.getenv("CLEANING_URL")
 APPLYCHECKLIST_URL=os.getenv("APPLYCHECKLIST_URL")
 INFOCHECKLIST_URL=os.getenv("INFOCHECKLIST_URL")
+
 SHEET=os.getenv("SHEET")
 BASE=os.getenv("BASE")
+ERROR=os.getenv("ERROR")
