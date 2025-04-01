@@ -20,10 +20,10 @@ def overWrite(path, temp) :
         temp_lines = [reader.readLine(line) for line in temp]
         writer.writerows(temp_lines)
 
-def errorCSV(path, line) :
+def writeAppend(path, line) :
     with open (path, 'a', newline='', encoding='UTF-8') as csv_file :
         writer = csv.writer(csv_file)
-        writer.writerow(reader.readLine(line))
+        writer.writerow(line)
         
 def verifyFile(path) :
     if os.isfile(path):

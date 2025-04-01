@@ -14,10 +14,18 @@ def validate(base, line, index=0) :
         loc = line["LOCOMOTIVA"]
         time = line["HORA"]
         
-        base_mats = tupleToList(baseToList(readCSV(base)), 1)
+        base_mats = tupleToList(baseToList(base), 1)
         if (not mat in base_mats) :
-            raise ValueError("Employee registration not exits")
+            raise ValueError("Employee registration does not exits")
+        
+        base_names = tupleToList(baseToList(base), 0)
+        if (not name in base_names) :
+            raise ValueError("Employee name does not exits")
 
+        for employee in base:
+            if employee["NOME"] == name and employee["MAT"] != mat :
+                raise ValueError("Employee name and registration dont match")
+        
         # Time formatter
         time_split = time.split(":")
         time = [int(value) for value in time_split]
