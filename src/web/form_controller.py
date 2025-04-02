@@ -18,7 +18,6 @@ def login() :
     findElement((By.XPATH, "//span[text()=' Continuar ']")).click()
     findElement((By.NAME, "user-password")).send_keys(config.PASSWORD)
     findElement((By.XPATH, "//span[text()=' Entrar ']")).click()
-    print("Login complete")
 
     if (pageIsLoaded(config.CHECKLIST_URL)) :
         loadPage(config.APPLYCHECKLIST_URL)
@@ -66,7 +65,6 @@ def checklist_info(line) :
 
     savingData()
     findElementByText("span", "Próximo").click()
-    print("Checklist information complete")
     
 def checklist_items() :
     # Check all to Yes
@@ -85,7 +83,7 @@ def checklist_items() :
     findElement((By.XPATH, '//*[@id="mat-mdc-dialog-1"]/div/div/cl-item-answer-all-dialog/mat-dialog-content/cl-evaluative/div[1]')
                 ).click()                                                                                                             # n/a
     findElementByText("span", "Confirmar ").click()                                                                                   # confirm
-    findElementByText("span", "Ok").click()                                                                                        # ok
+    findElementByText("span", "Ok").click()                                                                                           # ok
     
     # Finish the checklist
     for i in range(4):                                                                                                                # next (1 -> 4)
@@ -96,9 +94,8 @@ def checklist_items() :
     if (findElementByText("span", "Existem itens obrigatórios pendentes nesta aplicação (lista abaixo). Deseja revisar ou continuar depois?", 1) != None):
         raise Exception("Error to complete checklist...")
     else:
-        findElementByText("span", "Concluir ").click()                                                                                    # finish (2/2)
-        findElementByText("span", " Ok ").click()                                                                                         # ok
-        print("Checklist complete")
+        findElementByText("span", "Concluir ").click()                                                                                # finish (2/2)
+        findElementByText("span", " Ok ").click()                                                                                     # ok
     
 # Find a element by seletor
 def findElement(seletor, timeout=10):

@@ -26,7 +26,7 @@ start_time = time.time()
 # All logic for running RPA
 for index, line in enumerate(sheet) :
     try:
-        if index == 20:
+        if index == 840:
             break
         start_time_line = time.time()
         print(f"\n\nINDEX: {index}")
@@ -47,4 +47,4 @@ for index, line in enumerate(sheet) :
         print(f"Running for {end_time:.3f}s")
 end_time = time.time() - start_time
 print(f"\nRunning {index} times in {end_time:.3f}s")
-print(f"Avarage time per line {end_time/(index+1):.3f}s")
+print(f"Avarage time per line {end_time/(index):.3f}s")
