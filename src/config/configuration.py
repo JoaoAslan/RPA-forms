@@ -7,10 +7,11 @@ import os
 from dotenv import load_dotenv
 
 # Load chrome driver for Selenium
-def driver() :
+def driver(headless) :
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
-    chrome_options.add_argument("--headless=new")
+    if (headless) :
+        chrome_options.add_argument("--headless=new")
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.maximize_window()

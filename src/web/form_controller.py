@@ -3,15 +3,62 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 
-from time import sleep
+from data import csv_writer as writer
+from data import csv_reader as reader
 
-# Define Driver and Config global
-def init(main_config) :
+import time
+
+# Define some global variables
+def init(main_config, headless) :
     global driver
     global config
     config = main_config
-    driver = config.driver()
+    driver = config.driver(headless)
 
+def defineGUI() :
+    gui = input("HIDE or SHOW WebDriver GUI? [H/S]: ")
+    select = { "H" : True, "S" : False }
+    try :
+        return select[gui.upper()]
+    except Exception :
+        print(f"""
+Selected input {gui} for GUI is not supported
+Initiallizing with SHOW option""")
+        return False
+
+def defineTimes(sheet) :
+    rows_count = reader.totalLines(sheet)
+    times = int(input(f"How many lines do you want to run? (MAX: {rows_count}): "))
+    if times > rows_count :
+        times = 3
+        print("""
+It's impossible to run {times} times on length {rows_count}
+Default value defined: 3 times""")
+    return times
+
+def errorOccured(count_errors, error, csv, line) :
+    count_errors += 1
+    printError(error)
+    writer.writeAppend(csv, reader.readLine(line))
+    return count_errors
+
+def printInfo(index, line) :
+    print(f"""
+Index: {index}
+Value: {line}""")
+
+def printError(error) :
+    print(f"""
+An error occured!
+Error message: {error}""")
+
+def printTime(end, index, count) :
+    print(f"""
+Running {index} times in {end:.3f}s
+Avarage time per line {end/(index+1):.3f}s
+{count} errors occured!""")
+
+# Login in
 def login() :
     loadPage(config.LOGIN_URL)
     findElement((By.NAME, "user-name")).send_keys(config.USER)
@@ -87,7 +134,7 @@ def checklist_items() :
     
     # Finish the checklist
     for i in range(4):                                                                                                                # next (1 -> 4)
-        sleep(0.3)
+        time.sleep(0.3)
         findElementByText("span", "Próximo").click()
     findElementByText("span", " Concluir ").click()                                                                                   # finish (1/2)
     
@@ -130,22 +177,25 @@ def pageIsLoaded(url_loaded, timeout=10) :
 def loadPage(url_to_be_loaded):
     driver.get(url_to_be_loaded)
 
+# Wait save data
 def savingData():
     while (findElementByText("mat-hint", " Salvando... ", 0.2) != None):
-        sleep(0.35)
+        time.sleep(0.35)
 
+# Verify if elemets has a value (text)
 def isBlank(element, text) :
     if (not text in element.get_attribute("value")) :
         return True
     return False
 
+# Try to fill index with value (3 times)
 def tryUntilFill(index, value) :
     i = 0
     element = findElement(index)
     while (isBlank(element, value)) :
         if (i == 2):
             raise TypeError(f"Cant fill with {value}")
-        sleep(1)
+        time.sleep(1)
         element.send_keys(value)
         findElementByText("span", "2 de 7").click() # random element click
         i = i+1

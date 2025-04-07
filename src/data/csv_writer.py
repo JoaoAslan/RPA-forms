@@ -25,7 +25,11 @@ def writeAppend(path, line) :
         writer = csv.writer(csv_file)
         writer.writerow(line)
         
-def verifyFile(path) :
+def pathExist(path) :
     if os.isfile(path):
         return True
     return False
+
+def createFiles(file, fieldnames) :
+    if not pathExist(file) :
+        createCSV(file, fieldnames)

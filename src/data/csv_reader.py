@@ -7,6 +7,10 @@ def readCSV(path) :
         reader = list(csv.DictReader(csv_file))
         return reader
 
+def totalLines(csv) :
+    row_count = sum(1 for row in csv)
+    return row_count
+
 def validate(base, line, index=0) :
     try :
         name = line["NOME"].upper()
@@ -48,7 +52,6 @@ def validate(base, line, index=0) :
 
 def readLine(line) :
     return [line["NOME"], line["MATRICULA"], line["LOCOMOTIVA"], line["DATA"], line["HORA"]]
-    
 
 def baseToList(csv) :
     return [[line["NOME"], line["MAT"]] for line in csv]
